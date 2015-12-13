@@ -1,0 +1,53 @@
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class start_game_menu extends Panel {
+
+    Button[] buttons={new Button("PvP"),new Button("Easy"),new Button("Medium"),new Button("Hard"),new Button("Back")};
+    Main_applet my_parent;
+    public start_game_menu(int w, int h,final Main_applet my_parent) {
+        this.setLayout(null);
+        this.my_parent=my_parent;
+        for (int i=0;i<buttons.length;i++)
+        {
+            add(buttons[i]);
+            buttons[i].setBounds(50,(h/buttons.length)*i+50,w,(h/buttons.length));
+        }
+
+        buttons[0].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                my_parent.change_action(2);
+            }
+        });
+        buttons[1].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                my_parent.change_action(3);
+            }
+        });
+        buttons[2].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                my_parent.change_action(4);
+            }
+        });
+        buttons[3].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                my_parent.change_action(5);
+            }
+        });
+
+        buttons[4].addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                my_parent.change_action(0);
+            }
+        });
+
+
+    }
+
+}
