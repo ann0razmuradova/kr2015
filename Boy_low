@@ -1,0 +1,24 @@
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.util.Vector;
+
+public class Bot_low implements Logic {
+
+    @Override
+    public int turn(int[][] field) {
+
+
+        Vector<Integer> nul=new Vector<Integer>();
+        for (int i=0;i<3;i++)
+            for (int j=0;j<3;j++)
+                if (field[i][j]==0)
+                    nul.add((i*10+j));
+        int r=(int)(Math.random()*10)%nul.size();
+
+        return nul.get(r);
+    }
+
+}
