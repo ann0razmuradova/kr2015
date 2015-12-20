@@ -1,0 +1,60 @@
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Timer;
+
+public class Main_applet extends Applet {
+    public int current_action=0;
+    /*
+    0-main menu
+    1-start game menu
+    2-game
+    3- easy
+    4-medium
+    5-hard
+    
+    
+     */
+    Game game;
+    Component[]  components={new main_menu(200,200,this),new start_game_menu(200,200,this)};
+
+
+    @Override
+    public void init() {
+    	setSize(300, 300);
+        setLayout(new BorderLayout());
+        change_action(0);
+
+    }
+
+    @Override
+    public void paint(Graphics g) {
+        //g.drawString("main applet ",50,50);
+        //applets[current_action].init();
+    }
+
+    public void change_action(int act)
+    {
+        current_action=act;
+        removeAll();
+        removeMouseListener(game);
+
+        if (current_action==2){
+            game=new Game(this);
+            addMouseListener(game);
+            game.init();
+            return;
+        }
+        if (current_action>2){
+            game=new Game(this,current_action-2);
+            addMouseListener(game);
+            game.init();
+            return;
+        }
+
+        add("Center", components[current_action]);
+        validate();
+    }
+
+}
