@@ -1,0 +1,7 @@
+//import com.sun.prism.image.Coords;
+
+public interface Logic {
+
+    public int turn(final int[][] field);
+
+}
