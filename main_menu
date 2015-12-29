@@ -1,0 +1,31 @@
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class main_menu extends Panel {
+
+	Button[] buttons = { new Button("Start Game") };// ,new Button("Option")};
+	Label label = new Label("X vs O");
+	Main_applet my_parent;
+
+	public main_menu(int w, int h, final Main_applet my_parent) {
+		this.setLayout(null);
+		this.my_parent = my_parent;
+		for (int i = 0; i < buttons.length; i++) {
+			add(buttons[i]);
+			buttons[i].setBounds(50, 200, w, 50);
+		}
+		label.setFont(new Font("", 0, 40));
+		add(label);
+		label.setBounds(100, 70, w, 50);
+
+		buttons[0].addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				my_parent.change_action(1);
+			}
+		});
+
+	}
+}
