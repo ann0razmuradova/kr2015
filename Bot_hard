@@ -1,0 +1,104 @@
+import java.util.Vector;
+
+public class Bot_hard implements Logic {
+	private int n_turn = 0;
+
+	@Override
+	public int turn(int[][] field) {
+		n_turn++;
+
+		int t = -1;
+		do {
+			for (int i = 0; i < 3; i++) {
+				if (field[i][0] == field[i][1] && field[i][1] == t) {
+					if (field[i][2] == 0)
+						return (i * 10) + 2;
+				}
+				if (field[i][0] == field[i][2] && field[i][2] == t) {
+					if (field[i][1] == 0)
+						return (i * 10) + 1;
+				}
+				if (field[i][1] == field[i][2] && field[i][1] == t) {
+					if (field[i][0] == 0)
+						return (i * 10) + 0;
+				}
+			}
+			for (int i = 0; i < 3; i++) {
+				if (field[0][i] == field[1][i] && field[1][i] == t) {
+					if (field[2][i] == 0)
+						return 20 + i;
+				}
+				if (field[0][i] == field[2][i] && field[2][i] == t) {
+					if (field[1][i] == 0)
+						return 10 + i;
+				}
+				if (field[1][i] == field[2][i] && field[1][i] == t) {
+					if (field[0][i] == 0)
+						return 0 + i;
+				}
+			}
+			if (field[0][0] == field[1][1] && field[1][1] == t) {
+				if (field[2][2] == 0)
+					return 22;
+			}
+			if (field[0][0] == field[2][2] && field[0][0] == t) {
+				if (field[1][1] == 0)
+					return 11;
+			}
+			if (field[1][1] == field[2][2] && field[1][1] == t) {
+				if (field[0][0] == 0)
+					return 0;
+			}
+
+			if (field[0][2] == field[1][1] && field[1][1] == t) {
+				if (field[2][0] == 0)
+					return 20;
+			}
+			if (field[0][2] == field[2][0] && field[2][0] == t) {
+				if (field[1][1] == 0)
+					return 11;
+			}
+			if (field[1][1] == field[2][0] && field[1][1] == t) {
+				if (field[0][2] == 0)
+					return 2;
+			}
+			t *= -1;
+		} while (t != -1);
+
+		switch (n_turn) {
+		case 1: {
+			if (field[1][1] != 0) {
+				int i = (int) (Math.random() * 10) % 2;
+				int j = (int) (Math.random() * 10) % 2;
+				return (i * 2) * 10 + (j * 2);
+			} else {
+				return 11;
+			}
+		}
+		case 2: {
+			int r = (int) (Math.random() * 10) % 2;
+			if (r == 0) {
+				if (field[0][0] == 0)
+					return 0;
+				if (field[2][0] == 0)
+					return 20;
+			} else {
+				if (field[2][2] == 0)
+					return 22;
+				if (field[0][2] == 0)
+					return 2;
+			}
+		}
+		}
+
+		Vector<Integer> nul = new Vector<Integer>();
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++)
+				if (field[i][j] == 0)
+					nul.add((i * 10 + j));
+		int r = (int) (Math.random() * 10) % nul.size();
+
+		return nul.get(r);
+
+	}
+}
