@@ -1,0 +1,198 @@
+import java.applet.Applet;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class Game implements MouseListener {
+
+	Graphics parent_graph;
+	Main_applet my_parent;
+	int turn = 1;
+	int count = 0;
+	Logic logic;
+
+	Timer timer = new Timer();
+
+	int[][] field;
+	boolean game_over;
+
+	public Game(final Main_applet parent) throws HeadlessException {
+		this.my_parent = parent;
+		this.parent_graph = my_parent.getGraphics();
+
+		field = new int[3][3];
+		game_over = false;
+		turn = 1;
+		count = 0;
+	}
+
+	public Game(final Main_applet parent, int mode) throws HeadlessException {
+		this.my_parent = parent;
+		this.parent_graph = my_parent.getGraphics();
+		field = new int[3][3];
+		game_over = false;
+		count = 0;
+		if (mode == 1)
+			logic = new Bot_low();
+		else if (mode == 2)
+			logic = new Bot_medium();
+		else
+			logic = new Bot_hard();
+	}
+
+	public void init() {
+		timer.schedule(new TimerTask() {
+			@Override
+			public void run() {
+				paint(parent_graph);
+
+			}
+		}, 100, 70);
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++) {
+				field[i][j] = 0;
+			}
+		if (logic != null) {
+
+			int r = (int) (Math.random() * 10) % 2;
+			if (r == 0) {
+				turn = -1;
+				int t = logic.turn(field);
+				int y = t % 10;
+				int x = t / 10;
+				field[x][y] = turn;
+				turn *= -1;
+				count++;
+			} else
+				turn = 1;
+		}
+	}
+
+	public void paint(Graphics g) {
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 3; j++) {
+				if (field[i][j] == 1) {
+					g.drawLine(100 * i + 20, 100 * j + 20, 100 * i + 80,
+							100 * j + 80);
+					g.drawLine(100 * (i + 1) - 20, 100 * j + 20,
+							100 * (i + 1) - 80, 100 * j + 80);
+				}
+				if (field[i][j] == -1) {
+					g.drawOval(100 * i + 10, 100 * j + 10, 80, 80);
+				}
+			}
+		g.drawRect(100, 0, 100, 300);
+		g.drawRect(0, 100, 300, 100);
+
+	}
+
+	public void check_win() {
+		boolean flag = false;
+		if ((field[0][0] != 0) && (field[0][0] == field[0][1])
+				&& (field[0][0] == field[0][2])) {
+			parent_graph.drawLine(50, 50, 50, 250);
+			flag = true;
+		} else if ((field[1][0] != 0) && (field[1][0] == field[1][1])
+				&& (field[1][0] == field[1][2])) {
+			parent_graph.drawLine(150, 50, 150, 250);
+			flag = true;
+		} else if ((field[2][0] != 0) && (field[2][0] == field[2][1])
+				&& (field[2][0] == field[2][2])) {
+			parent_graph.drawLine(250, 50, 250, 250);
+			flag = true;
+		}
+		// ///////////
+		else if ((field[0][0] != 0) && (field[0][0] == field[1][0])
+				&& (field[0][0] == field[2][0])) {
+			parent_graph.drawLine(50, 50, 250, 50);
+			flag = true;
+		} else if ((field[0][1] != 0) && (field[0][1] == field[1][1])
+				&& (field[0][1] == field[2][1])) {
+			parent_graph.drawLine(50, 150, 250, 150);
+			flag = true;
+		} else if ((field[0][2] != 0) && (field[0][2] == field[1][2])
+				&& (field[0][2] == field[2][2])) {
+			parent_graph.drawLine(50, 250, 250, 250);
+			flag = true;
+		}
+		// ///////////
+		else if ((field[0][0] != 0) && (field[0][0] == field[1][1])
+				&& (field[0][0] == field[2][2])) {
+			parent_graph.drawLine(50, 50, 250, 250);
+			flag = true;
+		} else if ((field[0][2] != 0) && (field[0][2] == field[1][1])
+				&& (field[0][2] == field[2][0])) {
+			parent_graph.drawLine(250, 50, 50, 250);
+			flag = true;
+		}
+
+		if (flag == true) {
+			game_over = true;
+			parent_graph.setFont(new Font("", 1, 25));
+			if (turn == -1) {
+				parent_graph.setColor(new Color(255, 0, 0));
+				parent_graph.drawString("Player 1 WIN!", 50, 150);
+			} else {
+				parent_graph.setColor(new Color(0, 0, 255));
+				parent_graph.drawString("Player 2 WIN!", 50, 150);
+			}
+
+		} else if (count == 9) {
+			game_over = true;
+			parent_graph.setFont(new Font("", 1, 50));
+			parent_graph.setColor(new Color(0, 255, 0));
+			parent_graph.drawString("Draw", 90, 150);
+		}
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+		if (!game_over) {
+			int x = e.getX() / 100;
+			int y = e.getY() / 100;
+			if (field[x][y] == 0) {
+				field[x][y] = turn;
+				turn *= -1;
+				count++;
+			}
+			check_win();
+			if (logic != null && turn == -1 && !game_over) {
+				int t = logic.turn(field);
+				y = t % 10;
+				x = t / 10;
+				field[x][y] = turn;
+				turn *= -1;
+				count++;
+			}
+			check_win();
+		} else {
+			timer.cancel();
+			my_parent.change_action(0);
+
+		}
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
+	}
+}
